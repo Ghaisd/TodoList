@@ -1,0 +1,51 @@
+﻿@page "/todo"
+
+<h3>ToDoList</h3>
+<head>
+</head>
+
+    <h1>todos</h1>
+    <form id="form">
+
+      <input type= "text"  @bind="@task" onSubmit="return false;" class="input" id="input" placeholder="Enter your todo">
+      <button type="button" @onclick="addTask" class="btn btn-primary" autocomplete="off" >Add task</button>
+
+      <ul class="todos" id="todos"></ul>
+    </form>
+    <small>Left click to toggle completed. <br> Right click to delete todo</small>
+
+       <h2>The tasks are:</h2>
+   <ol>
+    @{
+        foreach(var item in tasks)
+        {
+            
+        <li>
+
+     <button class="btn" @onclick="DeleteTask"><i class="fa fa-trash"></i></button> @item <input type="checkbox">  
+       
+        
+    </li>
+    
+        }
+       }
+   </ol>
+
+  
+@code {
+    string task = "";
+    List<string> tasks = new List<string>();
+    int nrOfTasks = 0;
+
+    void addTask()
+    {
+        tasks.Add(task);
+        task = "";
+        nrOfTasks++;       
+    }
+    void DeleteTask()
+    {
+        task.Remove(0);
+    }
+
+}
