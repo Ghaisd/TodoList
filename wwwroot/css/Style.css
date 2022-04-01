@@ -3,6 +3,7 @@
 
 * {
     box-sizing: border-box;
+    overflow: scroll
 }
 
 body {
@@ -15,6 +16,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+   
 }
 
 

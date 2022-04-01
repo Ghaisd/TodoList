@@ -1,9 +1,10 @@
 ﻿@page "/todo"
-
+@inject IDialogService DialogService
 
 <h3>ToDoList</h3>
 <head>
 </head>
+<div>
 
 <h1>todos</h1>
 <form id="form" @onsubmit=AddTask autocomplete="off">
@@ -15,19 +16,23 @@
     
 </form>
 <br>
+</div>
+
+<div id="topcorner">
 <h2>The tasks are:</h2>
 <ol>
     @{
         foreach (var item in tasks)
         {
             <li>
-                <button class="btn" @onclick="DeleteTask"><i class="fa fa-trash"></i></button> @item.Text <input type="checkbox">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)" aria-label="delete"></MudIconButton>
+                 @item.Text <input type="checkbox">
             </li>
         }
     }
 </ol>
 
-
+</div>
 @code {
     string? task = null;
     List<Todo> tasks = new List<Todo>();
@@ -35,12 +40,14 @@
 
     void AddTask()
     {
+        if (task!=null && !task.All(c => c.Equals(' ')))
         tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
         task = null;
 
     }
-    void DeleteTask()
+
+    private void DeleteTask(Todo item)
     {
-        task.Remove(0);
+        tasks.Remove(item);
     }
 }
