@@ -6,33 +6,60 @@
 </head>
 <div>
 
-<h1>todos</h1>
-<form id="form" @onsubmit=AddTask autocomplete="off">
+    <h1>todos</h1>
 
-    <input type="text" @bind="@task" class="input" id="input" placeholder="Enter your todo">
-    <button type="button"  @onclick="AddTask" class="btn btn-primary"> Add task</button>
+    <MudTextField T="string" Clearable="true" OnValidSubmit="SubmitAsync"
+                  Variant="Variant.Text" Lines="1"
+                  @bind-Value="@task" placeholder="Enter your todo" />
+    <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
 
-    <ul class="todos" id="todos"></ul>
-    
-</form>
-<br>
+
+    @*  <form id="form" @onsubmit=AddTask autocomplete="off">
+
+        <input type="text" @bind="@task" class="input" id="input" placeholder="Enter your todo">
+        <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
+
+        <ul class="todos" id="todos"></ul>
+
+        </form>*@
+    <br />
+    <br />
 </div>
 
 <div id="topcorner">
-<h2>The tasks are:</h2>
-<ol>
+    <h2>The tasks are:</h2>
+
     @{
         foreach (var item in tasks)
         {
-            <li>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)" aria-label="delete"></MudIconButton>
-                 @item.Text <input type="checkbox">
-            </li>
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText>
+                        @item.Text
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)"
+                               aria-label="delete" style="float: right;"></MudIconButton>
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+            <br />
         }
     }
-</ol>
+
+
+    @*<ul>
+        @{
+        foreach (var item in tasks)
+        {
+        <li>
+        <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)" aria-label="delete"></MudIconButton>
+        @item.Text <input type="checkbox">
+        </li>
+        }
+        }
+        </ul>*@
 
 </div>
+
 @code {
     string? task = null;
     List<Todo> tasks = new List<Todo>();
@@ -40,8 +67,8 @@
 
     void AddTask()
     {
-        if (task!=null && !task.All(c => c.Equals(' ')))
-        tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
+        if (task != null && !task.All(c => c.Equals(' ')))
+            tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
         task = null;
 
     }
@@ -50,4 +77,5 @@
     {
         tasks.Remove(item);
     }
-}
+
+        }
