@@ -1,0 +1,102 @@
+﻿@page "/todoMudCards"
+@inject IDialogService DialogService
+
+<h3>ToDoList</h3>
+<head>
+</head>
+<div>
+
+    <h1>todos</h1>
+
+    <MudTextField  
+                  Variant="Variant.Outlined" 
+                  @bind-Value="@task" placeholder="Enter your todo" 
+                   @onkeyup="@SubmitByEnter"
+                  />
+    <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
+    <br />
+    <br />
+</div>
+      
+
+<div id=allTasks>
+    
+<div id="tasksToDo">
+    <h2>Tasks to do</h2>
+
+    @{
+        foreach (var item in tasks)
+        {
+            <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText>
+                        @item.Text
+                        <MudIconButton id = "deleteButton" Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)"
+                               aria-label="delete"></MudIconButton>
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+            <br />
+        }
+    }
+
+</div>
+
+@*<div id="tasksDone">
+    <h2>Tasks done</h2>
+@{
+
+    foreach (var item in tasksDone)
+    {
+        <MudCard Outlined="true">
+                <MudCardContent>
+                    <MudText>
+                        @item.Text
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+            <br />
+    }
+}
+</div>*@
+</div>
+
+
+@code {
+
+    void SubmitByEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Console.WriteLine("TAsk Added");
+            AddTask();
+        }
+    }
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            AddTask();
+        }
+    }
+    string? task = null;
+    List<Todo> tasks = new List<Todo>();
+    List<Todo> tasksDone = new List<Todo>();
+    int nrOfTasks = 0;
+
+    void AddTask()
+    {
+        if (task != null && !task.All(c => c.Equals(' ')))
+        {
+
+            tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
+        }
+        task = null;
+    }
+
+    private void DeleteTask(Todo item)
+    {
+        tasks.Remove(item);
+        tasksDone.Add(item);
+    }
+        }

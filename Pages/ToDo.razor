@@ -5,116 +5,76 @@
 <head>
 </head>
 <div>
-
     <h1>todos</h1>
 
-    <MudTextField  
-                  Variant="Variant.Outlined" 
-                  @bind-Value="@task" placeholder="Enter your todo" 
-                   @onkeyup="@SubmitByEnter"
-                  />
+    <MudTextField Variant="Variant.Outlined"
+                  @bind-Value="@task" placeholder="Enter your todo"
+                  @onkeyup="@SubmitByEnter" />
     <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
 
-
-    @*  <form id="form" @onsubmit=AddTask autocomplete="off">
-
-        <input type="text" @bind="@task" class="input" id="input" placeholder="Enter your todo">
-        <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
-
-        <ul class="todos" id="todos"></ul>
-
-        </form>*@
     <br />
     <br />
 </div>
-@{
-   foreach(var item in _items)
-   
-    {        
 
-    <MudDropContainer T="DropItem" Items="_items" ItemsSelector="@((item,dropzone) => item.Selector == dropzone)" ontimeupdate="1" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
-    <ChildContent>
-        @for (int i = 0; i < 3; i++) 
-         {
-             var dropzone = i.ToString();
-             <MudPaper Class="ma-4 flex-grow-1">
-                 <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
-                     <MudListSubheader>Drop Zone @dropzone</MudListSubheader>
-                     <MudDropZone T="DropItem" Identifier="@dropzone" Class="flex-grow-1" AllowReorder="true" />
-                 </MudList>
-             </MudPaper>
-         }
-    </ChildContent>
-    <ItemRenderer>
-        <MudListItem Text="@context.Name"/>
-    </ItemRenderer>
-</MudDropContainer>
-    }
-}
+    <MudDropContainer T="DropItem" Items="@_items" @ref="_container" ItemsSelector="@((item,dropzone) => item.Selector == dropzone)" ontimeupdate="1" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+        <ChildContent>
+            @for (int i = 0; i < 3; i++)
+            {
+            var dropzone = returnTaskHeadline(i);
+            @*var dropzone = i.ToString();*@
+            <MudPaper Class="ma-4 flex-grow-1">
+                    <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                        <MudListSubheader>
+                            @dropzone
+                        </MudListSubheader>
+                        <MudDropZone T="DropItem" Identifier="@dropzone" Class="flex-grow-1" AllowReorder="true" />
+                    </MudList>
+                </MudPaper>
+            }
+        </ChildContent>
+        <ItemRenderer>
+            <MudListItem Text="@context.Name" />
+        </ItemRenderer>
+    </MudDropContainer>
 
-<div id=allTasks>
-    
-@*<div id="tasksToDo">
-    <h2>Tasks to do</h2>
-
-    @{
-        foreach (var item in tasks)
-        {
-            <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudText>
-                        @item.Text
-                        <MudIconButton id = "deleteButton" Icon="@Icons.Material.Filled.Delete" @onclick="() => DeleteTask(item)"
-                               aria-label="delete"></MudIconButton>
-                    </MudText>
-                </MudCardContent>
-            </MudCard>
-            <br />
-        }
-    }
-
-</div>*@
-
-@*<div id="tasksDone">
-    <h2>Tasks done</h2>
-@{
-
-    foreach (var item in tasksDone)
-    {
-        <MudCard Outlined="true">
-                <MudCardContent>
-                    <MudText>
-                        @item.Text
-                    </MudText>
-                </MudCardContent>
-            </MudCard>
-            <br />
-    }
-}
-</div>*@
-</div>
 
 
 @code {
+    private void RefreshContainer()
+    {
+        //update the binding to the container
+        StateHasChanged();
+
+        //the container refreshes the internal state
+        _container.Refresh();
+    }
+
+    string returnTaskHeadline(int nr)
+    {
+        if (nr == 0) return "To Do";
+        else if (nr == 1) return "Doing";
+        return "Done";
+    }
+    string? task = null;
+    List<Todo> tasks = new List<Todo>();
+    List<Todo> tasksDone = new List<Todo>();
+    int nrOfTasks = 0;
+    private MudDropContainer<DropItem> _container;
+
     private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
         dropItem.Item.Selector = dropItem.DropzoneIdentifier;
     }
 
-    private List<DropItem> _items = new()
-    {
-        //new DropItem(){ Name = "Item 1", Selector = "0" },
-        //new DropItem(){ Name = "Item 2", Selector = "0" },
-        //new DropItem(){ Name = "Item 3", Selector = "1" },
-        //new DropItem(){ Name = "Item 4", Selector = "1" },
-        //new DropItem(){ Name = "Item 5", Selector = "2" },
-    };
+    private List<DropItem> _items = new List<DropItem>();
+    private List<DropItem> newList = new List<DropItem>();
 
     public class DropItem
     {
-        public string Name { get; init; }
+        public string Name { get; set; }
         public string Selector { get; set; }
     }
+
     void SubmitByEnter(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
@@ -123,6 +83,7 @@
             AddTask();
         }
     }
+
     public void Enter(KeyboardEventArgs e)
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
@@ -130,21 +91,18 @@
             AddTask();
         }
     }
-    string? task = null;
-    List<Todo> tasks = new List<Todo>();
-    List<Todo> tasksDone = new List<Todo>();
-    int nrOfTasks = 0;
 
     void AddTask()
     {
-        if (task != null && !task.All(c => c.Equals(' ')))
+        if (!String.IsNullOrEmpty(task?.Trim(' '))) // Old code: task != null && !task.All(c => c.Equals(' ')) <= This validation check will only occur when user types one space.
         {
-
-            tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
+            //tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
             _items.Add(new DropItem() { Name = task, Selector = "0" });
+            Console.WriteLine($"Added task: {task}");
         }
+        StateHasChanged();
+        _container.Refresh();
         task = null;
-
     }
 
     private void DeleteTask(Todo item)
@@ -152,5 +110,4 @@
         tasks.Remove(item);
         tasksDone.Add(item);
     }
-
-        }
+}
