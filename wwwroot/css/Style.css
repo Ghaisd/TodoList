@@ -6,7 +6,17 @@
     /*overflow-wrap: anywhere*/
 }
 body {
-    
+  
+}
+
+#by_header {
+    color: rgb(135, 206, 235);
+    font-weight: bolder;
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    position: fixed;
+    mix-blend-mode: overlay;
 }
 #allTasks {
     width: 100%;

@@ -1,13 +1,14 @@
 ﻿@page "/todo"
 @inject IDialogService DialogService
 
-<h3>ToDoList</h3>
+<h2 id="by_header">By Ghais</h2>
 <head>
+
 </head>
 <div>
     <h1>todos</h1>
 
-    <MudTextField Variant="Variant.Outlined"
+    <MudTextField Variant="Variant.Text"
                   @bind-Value="@task" placeholder="Enter your todo"
                   @onkeyup="@SubmitByEnter" />
     <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
@@ -20,8 +21,7 @@
         <ChildContent>
             @for (int i = 0; i < 3; i++)
             {
-            var dropzone = returnTaskHeadline(i);
-            @*var dropzone = i.ToString();*@
+            var dropzone = i==0 ? "To Do" : (i==1 ? "Doing" : "Done");
             <MudPaper Class="ma-4 flex-grow-1">
                     <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                         <MudListSubheader>
@@ -40,25 +40,11 @@
 
 
 @code {
-    private void RefreshContainer()
-    {
-        //update the binding to the container
-        StateHasChanged();
-
-        //the container refreshes the internal state
-        _container.Refresh();
-    }
-
-    string returnTaskHeadline(int nr)
-    {
-        if (nr == 0) return "To Do";
-        else if (nr == 1) return "Doing";
-        return "Done";
-    }
+    int nrOfTasks = 0;
     string? task = null;
     List<Todo> tasks = new List<Todo>();
     List<Todo> tasksDone = new List<Todo>();
-    int nrOfTasks = 0;
+    private List<DropItem> _items = new List<DropItem>();
     private MudDropContainer<DropItem> _container;
 
     private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
@@ -66,8 +52,6 @@
         dropItem.Item.Selector = dropItem.DropzoneIdentifier;
     }
 
-    private List<DropItem> _items = new List<DropItem>();
-    private List<DropItem> newList = new List<DropItem>();
 
     public class DropItem
     {
@@ -77,35 +61,27 @@
 
     void SubmitByEnter(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key == "Enter" || e.Code == "NumpadEnter")
         {
-            Console.WriteLine("TAsk Added");
+            Console.WriteLine("Task Added");
             AddTask();
         }
     }
-
-    public void Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            AddTask();
-        }
-    }
+   
 
     void AddTask()
     {
-        if (!String.IsNullOrEmpty(task?.Trim(' '))) // Old code: task != null && !task.All(c => c.Equals(' ')) <= This validation check will only occur when user types one space.
+        if (!String.IsNullOrEmpty(task?.Trim(' ')))
         {
-            //tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
-            _items.Add(new DropItem() { Name = task, Selector = "0" });
-            Console.WriteLine($"Added task: {task}");
+            tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
+            _items.Add(new DropItem() { Name = task, Selector = "To Do" });
         }
         StateHasChanged();
         _container.Refresh();
         task = null;
     }
 
-    private void DeleteTask(Todo item)
+    void DeleteTask(Todo item)
     {
         tasks.Remove(item);
         tasksDone.Add(item);
