@@ -28,12 +28,14 @@
                             @dropzone
                         </MudListSubheader>
                         <MudDropZone T="DropItem" Identifier="@dropzone" Class="flex-grow-1" AllowReorder="true" />
+                        
                     </MudList>
                 </MudPaper>
             }
         </ChildContent>
         <ItemRenderer>
-            <MudListItem Text="@context.Name" />
+            <MudListItem Text="@context.Name"  /> 
+            
         </ItemRenderer>
     </MudDropContainer>
 
