@@ -34,7 +34,7 @@
             }
         </ChildContent>
         <ItemRenderer>
-            <MudListItem Text="@context.Name"  /> 
+            <MudListItem Text="@context.Name"  @ondblclick="@(delete)" /> 
             
         </ItemRenderer>
     </MudDropContainer>
@@ -42,6 +42,13 @@
 
 
 @code {
+
+    public void delete()
+    {
+        _items.Clear();
+          StateHasChanged();
+        _container.Refresh();
+    }
     int nrOfTasks = 0;
     string? task = null;
     List<Todo> tasks = new List<Todo>();

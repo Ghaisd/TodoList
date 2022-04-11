@@ -6,12 +6,14 @@
     /*overflow-wrap: anywhere*/
 }
 body {
-  
+    font-family: "Goudy stout"
 }
+
+
 
 #by_header {
     color: rgb(135, 206, 235);
-    font-weight: bolder;
+    font-weight: 900;
     position: absolute;
     bottom: 1rem;
     right: 1rem;
@@ -43,7 +45,8 @@ h1 {
     color: rgb(179, 131, 226);
     font-size: 10rem;
     text-align: center;
-    font-weight: bolder;
+    font-weight: 900;
+    font-family: "Foobar Pro";
 }
 
 /*p   {
@@ -94,3 +97,4 @@ small {
     margin-top: 3rem;
     text-align: center;
 }
+
