@@ -1,18 +1,24 @@
 ﻿@page "/todo"
 @inject IDialogService DialogService
 
-<h2 id="by_header">By Ghais</h2>
+<h1 id="header-by">By Ghais</h1>
 <head>
 
 </head>
 <div>
-    <h1>todos</h1>
+    <h1 id="header-todos">todos</h1>
 
-    <MudTextField Variant="Variant.Text"
+    <MudTextField Variant="Variant.Text" id="submit"
                   @bind-Value="@task" placeholder="Enter your todo"
                   @onkeyup="@SubmitByEnter" />
-    <button type="button" @onclick="AddTask" class="btn btn-primary"> Add task</button>
-
+    <div class = "div-center">
+    <button type="button" id="btn-submit" @onclick="AddTask" class="btn btn-primary"> Add task</button>
+    <div class="divider"/>
+    <button type="button" id="btn-delete" @onclick="DeleteAllTasks" class="btn btn-danger"> Delete all tasks</button>
+    <br />
+    <br />
+    <h3 style="text-align:center;color:#C21807;" <em>Double click on a task to delete it</em></h3>
+    </div>
     <br />
     <br />
 </div>
@@ -22,7 +28,7 @@
             @for (int i = 0; i < 3; i++)
             {
             var dropzone = i==0 ? "To Do" : (i==1 ? "Doing" : "Done");
-            <MudPaper Class="ma-4 flex-grow-1">
+            <MudPaper Style="background-color: #ccffee; " Class="ma-4 flex-grow-1">
                     <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
                         <MudListSubheader>
                             @dropzone
@@ -34,21 +40,13 @@
             }
         </ChildContent>
         <ItemRenderer>
-            <MudListItem Text="@context.Name"  @ondblclick="@(delete)" /> 
-            
+            <MudListItem  Style="border:2px solid  #ccffee; background-color: aquamarine ;" Text="@context.Name"@ondblclick="(() => DeleteTask(context.Name))" /> 
         </ItemRenderer>
     </MudDropContainer>
 
 
 
 @code {
-
-    public void delete()
-    {
-        _items.Clear();
-          StateHasChanged();
-        _container.Refresh();
-    }
     int nrOfTasks = 0;
     string? task = null;
     List<Todo> tasks = new List<Todo>();
@@ -76,7 +74,6 @@
             AddTask();
         }
     }
-   
 
     void AddTask()
     {
@@ -90,9 +87,26 @@
         task = null;
     }
 
-    void DeleteTask(Todo item)
+    void DeleteTask(string text)
     {
-        tasks.Remove(item);
-        tasksDone.Add(item);
+        //tasks.Remove(item);
+        //tasksDone.Add(item);
+        for (int i = 0; i < _items.Count; i++)
+        {
+            if (_items[i].Name == text)
+            {
+                _items.RemoveAt(i);
+                  StateHasChanged();
+                 _container.Refresh();
+                break;
+            }
+        }
+    }
+
+     public void DeleteAllTasks()
+    {
+        _items.Clear();
+          StateHasChanged();
+        _container.Refresh();
     }
 }
