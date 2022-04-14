@@ -5,7 +5,7 @@
     color: aquamarine;
 }
 
-#header-by{
+#header-by {
     font-size: 84px;
     color: rgb(135, 206, 235);
     font-weight: 900;
@@ -34,19 +34,27 @@
     width: 20px;
     height: auto;
     display: inline-block;
-    padding-top:40px;
+    padding-top: 40px;
 }
+
 #btn-delete {
     text-align: center;
     width: 150px
 }
-.div-center{
-    text-align:center;
-    margin:10px;
+
+.div-center {
+    text-align: center;
+    margin: 10px;
 }
+
 #submit {
     font-size: 48px;
     text-align: center;
-    font-weight: bolder;
+    font-weight: lighter;
 }
 
+#header-delete {
+    text-align: center;
+    font-size: 24px;
+    color: #ff7668a6;
+}

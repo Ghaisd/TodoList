@@ -1,4 +1,5 @@
 ﻿@page "/todo"
+@using TodoList_DataAccess
 @inject IDialogService DialogService
 
 <h1 id="header-by">By Ghais</h1>
@@ -11,59 +12,51 @@
     <MudTextField Variant="Variant.Text" id="submit"
                   @bind-Value="@task" placeholder="Enter your todo"
                   @onkeyup="@SubmitByEnter" />
-    <div class = "div-center">
-    <button type="button" id="btn-submit" @onclick="AddTask" class="btn btn-primary"> Add task</button>
-    <div class="divider"/>
-    <button type="button" id="btn-delete" @onclick="DeleteAllTasks" class="btn btn-danger"> Delete all tasks</button>
-    <br />
-    <br />
-    <h3 style="text-align:center;color:#C21807;" <em>Double click on a task to delete it</em></h3>
+    <div class="div-center">
+        <button type="button" id="btn-submit" @onclick="AddTask" class="btn btn-primary"> Add task</button>
+        <div class="divider" />
+        <button type="button" id="btn-delete" @onclick="DeleteAllTasks" class="btn btn-danger"> Delete all tasks</button>
+        <br />
+        <br />
+        <h3 id="header-delete">Double click on a task to delete it</h3>
     </div>
     <br />
     <br />
 </div>
 
-    <MudDropContainer T="DropItem" Items="@_items" @ref="_container" ItemsSelector="@((item,dropzone) => item.Selector == dropzone)" ontimeupdate="1" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
-        <ChildContent>
-            @for (int i = 0; i < 3; i++)
-            {
-            var dropzone = i==0 ? "To Do" : (i==1 ? "Doing" : "Done");
-            <MudPaper Style="background-color: #ccffee; " Class="ma-4 flex-grow-1">
-                    <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
-                        <MudListSubheader>
-                            @dropzone
-                        </MudListSubheader>
-                        <MudDropZone T="DropItem" Identifier="@dropzone" Class="flex-grow-1" AllowReorder="true" />
-                        
-                    </MudList>
-                </MudPaper>
-            }
-        </ChildContent>
-        <ItemRenderer>
-            <MudListItem  Style="border:2px solid  #ccffee; background-color: aquamarine ;" Text="@context.Name"@ondblclick="(() => DeleteTask(context.Name))" /> 
-        </ItemRenderer>
-    </MudDropContainer>
+<MudDropContainer T="Todo" Items="@_items" @ref="_container" ItemsSelector="@((item,dropzone) => item.Selector == dropzone)" ontimeupdate="1" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+    <ChildContent>
+        @for (int i = 0; i < 3; i++)
+        {
+            var dropzone = i == 0 ? "To Do" : (i == 1 ? "Doing" : "Done");
+            <MudPaper Style="background-color: #E8D3B9; " Class="ma-4 flex-grow-1">
+                <MudList Clickable="true" Class="d-flex flex-column mud-height-full">
+                    <MudListSubheader>
+                        @dropzone
+                    </MudListSubheader>
+                    <MudDropZone T="Todo" Identifier="@dropzone" Class="flex-grow-1" AllowReorder="true" />
+
+                </MudList>
+            </MudPaper>
+        }
+    </ChildContent>
+    <ItemRenderer>
+        <MudListItem Style="border:2px solid #E8D3B9; background-color: #f5f5dc;" Text="@context.Text" @ondblclick="(() => DeleteTask(context.Id))" />
+    </ItemRenderer>
+</MudDropContainer>
 
 
 
 @code {
     int nrOfTasks = 0;
     string? task = null;
-    List<Todo> tasks = new List<Todo>();
-    List<Todo> tasksDone = new List<Todo>();
-    private List<DropItem> _items = new List<DropItem>();
-    private MudDropContainer<DropItem> _container;
+    private List<Todo> _items = new List<Todo>();
+    private MudDropContainer<Todo> _container;
 
-    private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
+
+    private void ItemUpdated(MudItemDropInfo<Todo> Todo)
     {
-        dropItem.Item.Selector = dropItem.DropzoneIdentifier;
-    }
-
-
-    public class DropItem
-    {
-        public string Name { get; set; }
-        public string Selector { get; set; }
+        Todo.Item.Selector = Todo.DropzoneIdentifier;
     }
 
     void SubmitByEnter(KeyboardEventArgs e)
@@ -79,34 +72,52 @@
     {
         if (!String.IsNullOrEmpty(task?.Trim(' ')))
         {
-            tasks.Add(new Todo { Text = task, Id = nrOfTasks++ });
-            _items.Add(new DropItem() { Name = task, Selector = "To Do" });
+            _items.Add(new Todo() { Id = nrOfTasks++, Text = task, Selector = "To Do" });
         }
-        StateHasChanged();
-        _container.Refresh();
+        RefreshContainer();
         task = null;
     }
 
-    void DeleteTask(string text)
+    void DeleteTask(int Id)
     {
-        //tasks.Remove(item);
-        //tasksDone.Add(item);
         for (int i = 0; i < _items.Count; i++)
         {
-            if (_items[i].Name == text)
+            if (_items[i].Id == Id)
             {
                 _items.RemoveAt(i);
-                  StateHasChanged();
-                 _container.Refresh();
+                nrOfTasks--;
+                RefreshContainer();
                 break;
             }
         }
     }
 
-     public void DeleteAllTasks()
+    public void DeleteAllTasks()
     {
         _items.Clear();
-          StateHasChanged();
+        nrOfTasks = 0;
+        RefreshContainer();
+    }
+
+    private void RefreshContainer()
+    {
+        //update the binding to the container
+        StateHasChanged();
+
+        //the container refreshes the internal state
         _container.Refresh();
+    }
+
+    public int ShowNrOfTasks(string text)
+    {
+        int counter= 0;
+        for(int i = 0; i < _items.Count; i++)
+        {
+            if (_items[i].Selector == text)
+            {
+                counter++;
+            }
+        }
+        return counter;
     }
 }
