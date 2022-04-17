@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TodoList_Business\TodoList_Business.csproj" />
     <ProjectReference Include="..\TodoList_DataAccess\TodoList_DataAccess.csproj" />
+    <ProjectReference Include="..\TodoList_Models\TodoList_Models.csproj" />
   </ItemGroup>
 
 </Project>

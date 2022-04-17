@@ -5,15 +5,15 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList", "TodoList.csproj", "{1AFDE073-B26D-4E98-A322-B092E7E0EE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList_Business", "..\TodoList_Business\TodoList_Business.csproj", "{B5D754A9-3E93-4FFB-924A-E414C4993EB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList_Business", "..\TodoList_Business\TodoList_Business.csproj", "{B5D754A9-3E93-4FFB-924A-E414C4993EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList_common", "..\TodoList_common\TodoList_common.csproj", "{2CF93FFB-6EA7-40ED-A7AA-105ECDAD6A45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList_common", "..\TodoList_common\TodoList_common.csproj", "{2CF93FFB-6EA7-40ED-A7AA-105ECDAD6A45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList_DataAccess", "..\TodoList_DataAccess\TodoList_DataAccess.csproj", "{412979B5-665D-4127-AC93-7411E6A6F445}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList_DataAccess", "..\TodoList_DataAccess\TodoList_DataAccess.csproj", "{412979B5-665D-4127-AC93-7411E6A6F445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList_Server", "..\TodoList_Server\TodoList_Server.csproj", "{40998253-B1B2-434D-8F3C-494A41C59962}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList_Server", "..\TodoList_Server\TodoList_Server.csproj", "{40998253-B1B2-434D-8F3C-494A41C59962}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList_Models", "..\TodoList_Models\TodoList_Models.csproj", "{2132F7E2-5019-4A94-97B7-A7A73B487FD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoList_Models", "..\TodoList_Models\TodoList_Models.csproj", "{2132F7E2-5019-4A94-97B7-A7A73B487FD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
