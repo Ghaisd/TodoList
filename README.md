@@ -1,7 +1,8 @@
 # TodoList
 Ikomm academy Mini Project
 
-![PictureOfProject](https://user-images.githubusercontent.com/33534832/164428154-fad42fdf-e573-47ee-9921-4ea01c441c76.png)
+![PicOfProject](https://user-images.githubusercontent.com/33534832/164429534-222d3a03-75a8-431a-be52-167f76b64201.png)
+
 
 
 
