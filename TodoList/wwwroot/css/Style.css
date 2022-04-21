@@ -1,20 +1,7 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css');
 
-.background-color-light-blue {
-    color: aquamarine;
-}
-
-#header-by {
-    font-size: 84px;
-    color: rgb(135, 206, 235);
-    font-weight: 900;
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    position: fixed;
-    mix-blend-mode: overlay;
-}
 
 
 #header-todos {
@@ -24,6 +11,17 @@
     font-weight: 900;
     font-family: "Foobar Pro";
 }
+
+#header-by {
+    font-size: 84px;
+    color: rgb(135, 206, 235);
+    font-weight: 900;
+    bottom: 1rem;
+    right: 1rem;
+    position: fixed;
+    mix-blend-mode: overlay;
+}
+
 
 #btn-submit {
     text-align: center;
@@ -67,3 +65,5 @@
     background: radial-gradient(ellipse at center, #a4b357 6%,#75890c 89%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a4b357', endColorstr='#75890c',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
+
+

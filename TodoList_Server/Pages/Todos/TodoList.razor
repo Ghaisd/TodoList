@@ -1,0 +1,98 @@
+﻿@page "/Todo"
+@inject ITodoRepository _todoRepository
+@inject IJSRuntime _jsRuntime
+
+<_DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>
+<div class="row mt-4">
+    <div class="col-6">
+        <h4 class="card-title text-primary">Todo List</h4>
+    </div>
+    <div class="col-4 offset-2">
+        <a href="todo/create" class="btn btn-primary form-control">Add New Todo </a>
+    </div>
+    <div class="col-12">
+        @if (Todos.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var objTodo in Todos)
+                    {
+                        <tr>
+                            <td>
+                                @objTodo.Text
+                            </td>
+                            <td>
+                                <NavLink href="@($"todo/edit/{objTodo.Id}")" class="btn-primary btn">Edit </NavLink>
+                                <button class="btn btn-danger" @onclick="()=>HandleDelete(objTodo.Id)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            if (IsLoading)
+            {
+                //loading gif
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
+            }
+            else
+            {
+                //no records
+                <p>No records found.</p>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private IEnumerable<TodoDTO> Todos { get; set; } = new List<TodoDTO>();
+    public bool IsLoading { get; set; }
+    private int DeleteTodoId { get; set; } = 0;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadTodos();
+        }
+    }
+
+    private async Task LoadTodos()
+    {
+         IsLoading = true;
+        StateHasChanged();
+        Todos = await _todoRepository.GetAll();
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private void HandleDelete(int id)
+    {
+        DeleteTodoId = id;
+        _jsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    }
+
+      public async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+         IsLoading = true;
+        if (isConfirmed && DeleteTodoId != 0)
+        {
+            //delete
+          await _todoRepository.Delete(DeleteTodoId);
+          await LoadTodos();
+          await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+        }
+        IsLoading = false;
+    }
+}

@@ -1,0 +1,93 @@
+﻿@page "/Data/tasks"
+
+@using DataAccessLibrary
+@using DataAccessLibrary.Models
+@using BlazorDemoUI.Models
+
+@inject ItasksData _db
+
+<h1>Tasks Page</h1>
+
+
+<h4>Insert New Task</h4>
+<EditForm Model="@newTask" OnValidSubmit="@InsertTask">
+    <DataAnnotationsValidator/>
+    <ValidationSummary />
+
+    <InputText id="Todo" @bind-Value="newTask.Todo" />
+    <InputText id="Doing" @bind-Value="newTask.Doing" />
+    <InputText id="Done" @bind-Value="newTask.Done" />
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+<h4>Current Tasks</h4>
+@if (tasks is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Todo</th>
+                <th>Doing</th>
+                <th>Done</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Task in tasks)
+            {
+                <tr>
+                    <td>@Task.Todo</td>
+                    <td>@Task.Doing</td>
+                    <td>@Task.Done</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button onclick="@DeleteData" > deleteEntire table</button>
+<button onclick="@StateHasChanged" > Update table</button>
+@code {
+    private List<TaskModel> tasks;
+    private DisplayTaskModel newTask = new DisplayTaskModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await _db.Gettasks();
+    }
+    private async Task InsertTask()
+    {
+        TaskModel p = new TaskModel
+            {
+                Todo = newTask.Todo,
+                Doing = newTask.Doing,
+                Done = newTask.Done
+            };
+        await _db.InsertTask(p);
+
+        tasks.Add(p);
+
+        newTask = new DisplayTaskModel();
+    } 
+    private async Task DeleteData()
+    {
+        
+        TaskModel p = new TaskModel
+            {
+                Todo = newTask.Todo,
+                Doing = newTask.Doing,
+                Done = newTask.Done
+            };
+
+        await _db.DeleteTask(p);
+
+        tasks.Remove(p);
+        tasks.Clear();
+
+        newTask = new DisplayTaskModel();
+    }
+}

@@ -1,0 +1,101 @@
+﻿@inject ITodoRepository _todoRepository
+
+<div style="display: flex;">
+    <ul style="width:33%;" class="list-group">
+
+        <li class="list-group-item light_brown_color">To Do</li>
+        @foreach (var todo in Todos)
+        {
+            if (todo.Selector == "To Do")
+            {
+                <li style="word-wrap: break-word;" class="list-group-item mt-1 border_with_bright_color">
+                    @todo.Text
+                    <button @onclick="()=>UpdateTaskRight(todo)"><i class="arrow right ml-2"></i></button>
+                    <button @onclick="()=>DeleteTask(todo.Id)"><i class="fa fa-trash"></i></button>
+                </li>
+
+            }
+        }
+    </ul>
+
+    <ul style="width:33%" class="list-group">
+        <li class="list-group-item light_brown_color">Doing</li>
+        @foreach (var todo in Todos)
+        {
+            if (todo.Selector == "Doing")
+            {
+                <li style="word-wrap: break-word;" class="list-group-item mt-1 border_with_bright_color">
+                    @todo.Text
+                    <button @onclick="()=>UpdateTaskRight(todo)"><i class="arrow right"></i></button>
+                    <button @onclick="()=>DeleteTask(todo.Id)"><i class="fa fa-trash"></i></button>
+                    <button @onclick="()=>UpdateTaskLeft(todo)"><i class="arrow left"></i></button>
+                </li>
+            }
+        }
+    </ul>
+
+    <ul style="width:33%" class="list-group">
+        <li class="list-group-item light_brown_color">Done</li>
+        @foreach (var todo in Todos)
+        {
+            if (todo.Selector == "Done")
+            {
+                <li style="word-wrap: break-word;" class="list-group-item mt-1 border_with_bright_color">
+                    @todo.Text
+                    <button @onclick="()=>DeleteTask(todo.Id)"><i class="fa fa-trash"></i></button>
+                    <button @onclick="()=>UpdateTaskLeft(todo)"><i class="arrow left"></i></button>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<TodoDTO> Todos { get; set; } = new List<TodoDTO>();
+
+    public bool IsLoading { get; set; } = true;
+
+    private async Task UpdateTaskRight(TodoDTO todo)
+    {
+        if (todo.Selector == "To Do")
+        {
+            todo.Selector = "Doing";
+        }
+        else
+        {
+            todo.Selector = "Done";
+        }
+        await _todoRepository.Update(todo);
+        await LoadTodos();
+    }
+
+    private async Task UpdateTaskLeft(TodoDTO todo)
+    {
+        if (todo.Selector == "Doing")
+        {
+            todo.Selector = "To Do";
+        }
+        else
+        {
+            todo.Selector = "Doing";
+        }
+        await _todoRepository.Update(todo);
+        await LoadTodos();
+        StateHasChanged();
+    }
+
+    private async Task LoadTodos()
+    {
+        Todos = await _todoRepository.GetAll();
+        StateHasChanged();
+    }
+
+    private async Task DeleteTask(int id)
+    {
+        await _todoRepository.Delete(id);
+        await LoadTodos();
+    }
+
+}

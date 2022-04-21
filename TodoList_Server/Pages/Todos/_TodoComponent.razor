@@ -1,0 +1,71 @@
+﻿@inject ITodoRepository _todoRepository
+@inject IJSRuntime _jsRuntime
+
+
+<h1 id="header-todos">todos</h1>
+
+<CascadingValue Value="this">
+    <_SubmitAndBtnsComponent Todos=@Todos></_SubmitAndBtnsComponent>
+</CascadingValue>
+
+<_ListsComponent Todos=@Todos></_ListsComponent>
+
+@*<_DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>*@
+
+<h1 id="header-by">By Ghais</h1>
+
+
+@code {
+
+    private IEnumerable<TodoDTO> Todos { get; set; } = new List<TodoDTO>();
+    public bool IsLoading { get; set; } = true;
+    private int DeleteTodoId { get; set; } = 0;
+    private bool deleteAllTasks = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadTodos();
+        }
+    }
+
+    private async Task LoadTodos()
+    {
+        IsLoading = true;
+        StateHasChanged();
+        Todos = await _todoRepository.GetAll();
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+   
+
+    private async Task UpdateTaskRight(TodoDTO todo)
+    {
+        if (todo.Selector == "To Do")
+            todo.Selector = "Doing";
+        else
+            todo.Selector = "Done";
+        await _todoRepository.Update(todo);
+        await LoadTodos();
+        StateHasChanged();
+    }
+
+    private async Task UpdateTaskLeft(TodoDTO todo)
+    {
+        if (todo.Selector == "Doing")
+            todo.Selector = "To Do";
+        else
+            todo.Selector = "Doing";
+        await _todoRepository.Update(todo);
+        await LoadTodos();
+        StateHasChanged();
+    }
+
+    public async Task RefreshState()
+    {
+        this.StateHasChanged();
+        await LoadTodos();
+    }
+}

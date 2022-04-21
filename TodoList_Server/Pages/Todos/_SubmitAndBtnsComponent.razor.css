@@ -1,0 +1,32 @@
+﻿#btn-submit {
+    text-align: center;
+    width: 150px;
+}
+
+.divider {
+    width: 20px;
+    height: auto;
+    display: inline-block;
+    padding-top: 40px;
+}
+
+
+#btn-delete {
+    text-align: center;
+    width: 150px
+}
+
+.div-center {
+    text-align: center;
+    margin: 10px;
+}
+#submit {
+    width: 800px;
+    font-size: 48px;
+    text-align: center;
+    font-weight: lighter;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+
+}

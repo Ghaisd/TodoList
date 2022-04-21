@@ -1,0 +1,75 @@
+﻿@inject ITodoRepository _todoRepository
+@inject IJSRuntime _jsRuntime;
+<_DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>
+
+<div>
+
+    <input style="word-wrap: break-word;" type="text" @onkeyup="@SubmitByEnter" @bind="Todo.Text" id="submit" placeholder="Enter your todo" autocomplete="off">
+    <div class="div-center">
+        <button type="button" id="btn-submit" @onclick="AddTask" class="btn btn-primary"> Add task</button>
+        <div class="divider" />
+        <button type="button" id="btn-delete" @onclick="DeleteAllTasks" class="btn btn-danger"> Delete all tasks</button>
+        <br />
+        <br />
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public _TodoComponent _Parent { get; set; }
+
+    [Parameter]
+    public IEnumerable<TodoDTO> Todos { get; set; } = new List<TodoDTO>();
+
+    public bool DeleteAll { get; set; } = false;
+
+    private TodoDTO Todo { get; set; } = new TodoDTO();
+
+    private async Task SubmitByEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Code == "NumpadEnter")
+        {
+            await AddTask();
+        }
+    }
+
+    private async Task AddTask()
+    {
+        if (!String.IsNullOrEmpty(Todo.Text?.Trim(' ')))
+        {
+            await _todoRepository.Create(Todo);
+            await _Parent.RefreshState();
+            Todo.Text = null;
+        }
+    }
+
+
+    private async Task DeleteAllTasks()
+    {
+        if (Todos.Any())
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+            DeleteAll = true;
+        }
+    }
+
+    public async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        if (isConfirmed && DeleteAll)
+        {
+            foreach (var todo in Todos)
+            {
+                await _todoRepository.Delete(todo.Id);
+            }
+            await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+            DeleteAll = false;
+        }
+        await _Parent.RefreshState();
+
+    }
+
+
+    }
+
+
